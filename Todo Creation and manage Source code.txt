@@ -1,0 +1,125 @@
+1. Todo Creation
+Acceptance Criteria:
+Given a text box.
+When the user clicks on the text box, inputs Todo, and hits Enter.
+Then the Todo list should be created successfully.
+
+
+public class TodoTests {
+    WebDriver driver = new ChromeDriver();
+
+    @Test
+    public void testCreateTodo() {
+        driver.get("http://your-todo-app-url.com");
+        
+        // Find the input text box element
+        WebElement inputBox = driver.findElement(By.cssSelector("input.todo-input"));
+
+        // Click on the text box and input a Todo
+        inputBox.click();
+        inputBox.sendKeys("Buy groceries");
+
+        // Hit Enter to create the Todo
+        inputBox.submit();
+
+        // Check if the Todo is successfully created by verifying it exists in the list
+        WebElement newTodo = driver.findElement(By.xpath("//ul/li[text()='Buy groceries']"));
+        assertNotNull(newTodo);
+
+        driver.quit();
+    }
+}
+2. Edit Todo
+Acceptance Criteria:
+Given a Todo is already created.
+When the user double-clicks on it.
+Then the user should be able to edit or modify the Todo.
+Code:
+java
+Copy code
+@Test
+public void testEditTodo() {
+    driver.get("http://your-todo-app-url.com");
+    
+    // Assume "Buy groceries" Todo is already created.
+    WebElement todo = driver.findElement(By.xpath("//ul/li[text()='Buy groceries']"));
+
+    // Double-click on the Todo to edit it
+    todo.click();
+    todo.click();
+
+    // Find the input field where user can edit the Todo
+    WebElement editInputBox = driver.findElement(By.cssSelector("input.edit-input"));
+    editInputBox.clear(); // Clear the existing text
+    editInputBox.sendKeys("Buy vegetables");
+
+    // Submit the changes
+    editInputBox.submit();
+
+    // Verify if the Todo was updated
+    WebElement updatedTodo = driver.findElement(By.xpath("//ul/li[text()='Buy vegetables']"));
+    assertNotNull(updatedTodo);
+
+    driver.quit();
+}
+3. Mark Completion
+Acceptance Criteria:
+Given a Todo is already created.
+When the user clicks on the radio button at the start of the Todo.
+Then the Todo should be marked as completed.
+Code:
+java
+Copy code
+@Test
+public void testMarkCompletion() {
+    driver.get("http://your-todo-app-url.com");
+    
+    // Assume "Buy vegetables" Todo is already created
+    WebElement todo = driver.findElement(By.xpath("//ul/li[text()='Buy vegetables']"));
+    
+    // Find the radio button (mark as completed) and click it
+    WebElement radioButton = todo.findElement(By.cssSelector("input[type='radio']"));
+    radioButton.click();
+
+    // Verify if the Todo is marked as completed (e.g., it might be crossed out or have a class like 'completed')
+    assertTrue(todo.getAttribute("class").contains("completed"));
+
+    driver.quit();
+}
+4. Filter Active/Completed Tabs
+Acceptance Criteria:
+Given Todos are already created with some completed and active statuses.
+When the user clicks on the tabs (All, Active, Completed).
+Then the Todos should be filtered accordingly based on its status.
+Code:
+java
+Copy code
+@Test
+public void testFilterTodos() {
+    driver.get("http://your-todo-app-url.com");
+
+    // Assume there are some Todos already created with both active and completed statuses
+
+    // Click on the "Active" tab to filter active Todos
+    WebElement activeTab = driver.findElement(By.cssSelector("button#active-tab"));
+    activeTab.click();
+
+    // Verify that only active Todos are shown (for example, checking for a 'completed' class)
+    assertTrue(driver.findElements(By.xpath("//ul/li[contains(@class, 'active')]")).size() > 0);
+
+    // Click on the "Completed" tab to filter completed Todos
+    WebElement completedTab = driver.findElement(By.cssSelector("button#completed-tab"));
+    completedTab.click();
+
+    // Verify that only completed Todos are shown
+    assertTrue(driver.findElements(By.xpath("//ul/li[contains(@class, 'completed')]")).size() > 0);
+
+    // Click on the "All" tab to see all Todos
+    WebElement allTab = driver.findElement(By.cssSelector("button#all-tab"));
+    allTab.click();
+
+    // Verify that all Todos are displayed
+    assertTrue(driver.findElements(By.xpath("//ul/li")).size() > 0);
+
+    driver.quit();
+}
